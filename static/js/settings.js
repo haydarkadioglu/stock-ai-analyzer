@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const modelName = document.getElementById('model-name').value.trim();
 
         if (!apiKey && !modelName) {
-            showStatus('Lütfen en az bir ayar girin.', 'error');
+            showStatus(t('errorNoSettings'), 'error');
             return;
         }
 
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function loadCurrentSettings() {
     const currentSettings = document.getElementById('current-settings');
-    currentSettings.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>';
+    currentSettings.innerHTML = `<div class="loading"><i class="fas fa-spinner fa-spin"></i> ${t('loading')}</div>`;
 
     fetch('/api/settings')
         .then(response => response.json())
@@ -32,7 +32,7 @@ function loadCurrentSettings() {
         })
         .catch(error => {
             console.error('Error:', error);
-            currentSettings.innerHTML = '<div class="error-message">Ayarlar yüklenirken bir hata oluştu.</div>';
+            currentSettings.innerHTML = `<div class="error-message">${t('errorLoadingSettings')}</div>`;
         });
 }
 
@@ -41,13 +41,13 @@ function displayCurrentSettings(data) {
     
     currentSettings.innerHTML = `
         <div class="setting-item">
-            <span class="label">API Key Durumu:</span>
+            <span class="label">${t('apiKeyStatus')}:</span>
             <span class="status ${data.api_key_configured}">
-                ${data.api_key_configured ? 'Yapılandırıldı' : 'Yapılandırılmadı'}
+                ${data.api_key_configured ? t('configured') : t('notConfigured')}
             </span>
         </div>
         <div class="setting-item">
-            <span class="label">Mevcut Model:</span>
+            <span class="label">${t('currentModel')}:</span>
             <span class="value">${data.model}</span>
         </div>
     `;
@@ -55,7 +55,7 @@ function displayCurrentSettings(data) {
 
 function saveSettings(apiKey, modelName) {
     const statusMessage = document.getElementById('status-message');
-    statusMessage.textContent = 'Kaydediliyor...';
+    statusMessage.textContent = t('saving');
     statusMessage.className = 'status-message';
     statusMessage.style.display = 'block';
 
@@ -75,7 +75,7 @@ function saveSettings(apiKey, modelName) {
         if (data.error) {
             showStatus(data.error, 'error');
         } else {
-            showStatus(data.message || 'Ayarlar başarıyla kaydedildi!', 'success');
+            showStatus(data.message || t('saveSuccess'), 'success');
             // Clear API key field for security
             if (apiKey) {
                 document.getElementById('api-key').value = '';
@@ -86,7 +86,7 @@ function saveSettings(apiKey, modelName) {
     })
     .catch(error => {
         console.error('Error:', error);
-        showStatus('Ayarlar kaydedilirken bir hata oluştu: ' + error.message, 'error');
+        showStatus(`${t('errorSavingSettings')}: ${error.message}`, 'error');
     });
 }
 

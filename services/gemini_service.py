@@ -10,27 +10,29 @@ def configure_gemini(api_key=None):
         genai.configure(api_key=key)
 
 
-def ask_question(symbol, price_data, analysis_text, question, model_name=None):
+def ask_question(symbol, price_data, analysis_text, question, model_name=None, language='tr'):
     """Ask a follow-up question about the analysis"""
     model_name = model_name or GEMINI_MODEL
     
     # Configure Gemini
     configure_gemini()
     
-    prompt = f"""
-    Sen bir finansal analiz uzmanısın. Aşağıdaki analiz raporu hakkında kullanıcının sorusunu yanıtla:
-
-    Sembol: {symbol}
-    Mevcut Fiyat: ${price_data.get('price', 'N/A')}
-    Değişim: {price_data.get('change', 'N/A')} ({price_data.get('change_percent', 'N/A')}%)
+    lang_instruction = "Türkçe olarak" if language == 'tr' else "In English"
     
-    ÖNCEKİ ANALİZ RAPORU:
+    prompt = f"""
+    You are a financial analysis expert. Answer the user's question about the following analysis report:
+
+    Symbol: {symbol}
+    Current Price: ${price_data.get('price', 'N/A')}
+    Change: {price_data.get('change', 'N/A')} ({price_data.get('change_percent', 'N/A')}%)
+    
+    PREVIOUS ANALYSIS REPORT:
     {analysis_text}
     
-    KULLANICI SORUSU: {question}
+    USER QUESTION: {question}
     
-    Lütfen kullanıcının sorusunu, önceki analiz raporuna dayanarak kısa ve net bir şekilde (maksimum 150 kelime) yanıtla.
-    Türkçe olarak, profesyonel ama anlaşılır bir dille cevap ver.
+    Please answer the user's question based on the previous analysis report in a concise and clear manner (maximum 150 words).
+    {lang_instruction}, answer in a professional but understandable way.
     """
     
     try:
@@ -41,7 +43,7 @@ def ask_question(symbol, price_data, analysis_text, question, model_name=None):
         raise Exception(f"Gemini API error: {str(e)}")
 
 
-def analyze_stock(symbol, price_data, analysis_type='short_term', model_name=None):
+def analyze_stock(symbol, price_data, analysis_type='short_term', model_name=None, language='tr'):
     """Analyze a stock using Gemini AI
     
     Args:
@@ -85,29 +87,47 @@ def analyze_stock(symbol, price_data, analysis_type='short_term', model_name=Non
     is_warrant = symbol.endswith('.V')
     warrant_note = ""
     if is_warrant:
-        warrant_note = "\n\nNOT: Bu bir varant (warrant) sembolüdür. Varantlar, dayanak varlığa (örneğin KOZAL) dayalı türev enstrümanlardır. Varant analizinde dayanak varlığın performansı, vade tarihi, kullanım fiyatı ve varantın kaldıracı gibi faktörleri değerlendir."
+        if language == 'tr':
+            warrant_note = "\n\nNOT: Bu bir varant (warrant) sembolüdür. Varantlar, dayanak varlığa (örneğin KOZAL) dayalı türev enstrümanlardır. Varant analizinde dayanak varlığın performansı, vade tarihi, kullanım fiyatı ve varantın kaldıracı gibi faktörleri değerlendir."
+        else:
+            warrant_note = "\n\nNOTE: This is a warrant symbol. Warrants are derivative instruments based on underlying assets (e.g., KOZAL). In warrant analysis, consider factors such as the underlying asset's performance, expiry date, strike price, and the warrant's leverage."
+    
+    # Create analysis prompt based on language
+    if language == 'tr':
+        lang_instruction = "Türkçe olarak, profesyonel ama kısa ve öz bir şekilde sun."
+        analysis_type_label = analysis_info['title']
+    else:
+        lang_instruction = "In English, present it professionally but concisely."
+        # Translate analysis type titles to English
+        analysis_type_labels_en = {
+            'daily': 'DAILY ANALYSIS (1 Day)',
+            'weekly': 'WEEKLY ANALYSIS (1 Week)',
+            'short_term': 'SHORT-TERM ANALYSIS (1-3 Months)',
+            'long_term': 'LONG-TERM ANALYSIS (6-12 Months)'
+        }
+        analysis_type_label = analysis_type_labels_en.get(analysis_type, analysis_info['title'])
     
     # Create analysis prompt - Kısa ve öz
     prompt = f"""
-    Sen bir finansal analiz uzmanısın. Aşağıdaki hisse senedi/kripto para hakkında {analysis_info['title']} yap:
+    You are a financial analysis expert. Perform {analysis_type_label} on the following stock/cryptocurrency:
 
-    Sembol: {symbol}
-    Mevcut Fiyat: ${price_data.get('price', 'N/A')}
-    Değişim: {price_data.get('change', 'N/A')} ({price_data.get('change_percent', 'N/A')}%)
-    Hacim: {price_data.get('volume', 'N/A')}
+    Symbol: {symbol}
+    Current Price: ${price_data.get('price', 'N/A')}
+    Change: {price_data.get('change', 'N/A')} ({price_data.get('change_percent', 'N/A')}%)
+    Volume: {price_data.get('volume', 'N/A')}
     {warrant_note}
     
-    Analiz Türü: {analysis_info['title']}
+    Analysis Type: {analysis_type_label}
     
-    Lütfen KISA VE ÖZ bir analiz yap (maksimum 300 kelime). Şu başlıkları kısaca özetle:
+    Please perform a BRIEF AND CONCISE analysis (maximum 300 words). Briefly summarize the following headings:
     
-    1. MEVCUT DURUM (2-3 cümle)
-    2. TEKNİK ANALİZ (2-3 cümle - {analysis_info['focus']})
-    3. FİYAT HEDEFLERİ (1-2 cümle)
-    4. RİSKLER VE FIRSATLAR (2-3 cümle)
-    5. ÖNERİ (1 cümle)
+    1. CURRENT SITUATION (2-3 sentences)
+    2. TECHNICAL ANALYSIS (2-3 sentences - {analysis_info['focus']})
+    3. PRICE TARGETS (1-2 sentences)
+    4. RISKS AND OPPORTUNITIES (2-3 sentences)
+    5. RECOMMENDATION (1 sentence)
     
-    Analizi Türkçe olarak, profesyonel ama kısa ve öz bir şekilde sun. Gereksiz detaylardan kaçın, sadece önemli noktaları belirt.
+    {lang_instruction} Avoid unnecessary details, only mention important points.
     """
     
     try:

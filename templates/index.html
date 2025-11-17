@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borsa Analiz - Anasayfa</title>
+    <title>Stock AI Analyzer - Home</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,38 +12,42 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <i class="fas fa-chart-line"></i>
-                <span>Borsa Analiz</span>
+                <span data-i18n="appName">Stock AI Analyzer</span>
             </div>
             <div class="nav-links">
-                <a href="/" class="nav-link active"><i class="fas fa-home"></i> Anasayfa</a>
-                <a href="/analyze" class="nav-link"><i class="fas fa-brain"></i> Analiz</a>
-                <a href="/settings" class="nav-link"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="/" class="nav-link active"><i class="fas fa-home"></i> <span data-i18n="navHome">Home</span></a>
+                <a href="/analyze" class="nav-link"><i class="fas fa-brain"></i> <span data-i18n="navAnalyze">Analyze</span></a>
+                <a href="/settings" class="nav-link"><i class="fas fa-cog"></i> <span data-i18n="navSettings">Settings</span></a>
+                <div class="lang-selector">
+                    <button id="lang-tr" class="lang-btn active" onclick="setLanguage('tr')">TR</button>
+                    <button id="lang-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+                </div>
             </div>
         </div>
     </nav>
 
     <div class="container">
         <header class="page-header">
-            <h1><i class="fas fa-chart-line"></i> Anlık Borsa Fiyatları</h1>
-            <p class="subtitle">Gerçek zamanlı hisse senedi ve kripto para fiyatları</p>
+            <h1><i class="fas fa-chart-line"></i> <span data-i18n="pageTitle">Real-Time Stock Prices</span></h1>
+            <p class="subtitle" data-i18n="pageSubtitle">Real-time stock and cryptocurrency prices</p>
         </header>
 
         <div class="tabs">
             <button class="tab-btn active" data-tab="popular">
-                <i class="fas fa-star"></i> Popüler Hisseler
+                <i class="fas fa-star"></i> <span data-i18n="tabPopular">Popular Stocks</span>
             </button>
             <button class="tab-btn" data-tab="crypto">
-                <i class="fab fa-bitcoin"></i> Kripto Paralar
+                <i class="fab fa-bitcoin"></i> <span data-i18n="tabCrypto">Cryptocurrencies</span>
             </button>
             <button class="tab-btn" data-tab="borsa">
-                <i class="fas fa-building"></i> Borsa İstanbul
+                <i class="fas fa-building"></i> <span data-i18n="tabBorsa">Istanbul Stock Exchange</span>
             </button>
         </div>
 
         <div class="tab-content active" id="popular-tab">
             <div class="price-grid" id="popular-grid">
                 <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i> Yükleniyor...
+                    <i class="fas fa-spinner fa-spin"></i> <span data-i18n="loading">Loading...</span>
                 </div>
             </div>
         </div>
@@ -51,7 +55,7 @@
         <div class="tab-content" id="crypto-tab">
             <div class="price-grid" id="crypto-grid">
                 <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i> Yükleniyor...
+                    <i class="fas fa-spinner fa-spin"></i> <span data-i18n="loading">Loading...</span>
                 </div>
             </div>
         </div>
@@ -59,12 +63,13 @@
         <div class="tab-content" id="borsa-tab">
             <div class="price-grid" id="borsa-grid">
                 <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i> Yükleniyor...
+                    <i class="fas fa-spinner fa-spin"></i> <span data-i18n="loading">Loading...</span>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

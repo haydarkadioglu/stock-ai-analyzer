@@ -41,6 +41,7 @@ def analyze_stock_route():
     data = request.json
     symbol = data.get('symbol', '').upper()
     analysis_type = data.get('analysis_type', 'short_term')
+    language = data.get('language', 'tr')  # Default to Turkish
     
     # Validate analysis type
     valid_types = ['daily', 'weekly', 'short_term', 'long_term']
@@ -78,7 +79,7 @@ def analyze_stock_route():
             return jsonify({'error': 'Bu sembol için geçerli fiyat verisi bulunamadı. Lütfen farklı bir sembol deneyin.'}), 404
         
         # Analyze with Gemini
-        analysis = analyze_stock(symbol, price_data, analysis_type, model_name)
+        analysis = analyze_stock(symbol, price_data, analysis_type, model_name, language)
         
         return jsonify({
             'symbol': symbol,
@@ -100,6 +101,7 @@ def ask_question_route():
     question = data.get('question', '').strip()
     analysis_text = data.get('analysis_text', '')
     price_data = data.get('price_data', {})
+    language = data.get('language', 'tr')  # Default to Turkish
     
     if not symbol or not question:
         return jsonify({'error': 'Symbol and question are required'}), 400
@@ -116,7 +118,7 @@ def ask_question_route():
     
     try:
         # Ask question using Gemini
-        answer = ask_question(symbol, price_data, analysis_text, question, model_name)
+        answer = ask_question(symbol, price_data, analysis_text, question, model_name, language)
         
         return jsonify({
             'symbol': symbol,

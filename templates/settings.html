@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borsa Analiz - Ayarlar</title>
+    <title>Stock AI Analyzer - Settings</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,45 +12,50 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <i class="fas fa-chart-line"></i>
-                <span>Borsa Analiz</span>
+                <span data-i18n="appName">Stock AI Analyzer</span>
             </div>
             <div class="nav-links">
-                <a href="/" class="nav-link"><i class="fas fa-home"></i> Anasayfa</a>
-                <a href="/analyze" class="nav-link"><i class="fas fa-brain"></i> Analiz</a>
-                <a href="/settings" class="nav-link active"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="/" class="nav-link"><i class="fas fa-home"></i> <span data-i18n="navHome">Home</span></a>
+                <a href="/analyze" class="nav-link"><i class="fas fa-brain"></i> <span data-i18n="navAnalyze">Analyze</span></a>
+                <a href="/settings" class="nav-link active"><i class="fas fa-cog"></i> <span data-i18n="navSettings">Settings</span></a>
+                <div class="lang-selector">
+                    <button id="lang-tr" class="lang-btn active" onclick="setLanguage('tr')">TR</button>
+                    <button id="lang-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+                </div>
             </div>
         </div>
     </nav>
 
     <div class="container">
         <header class="page-header">
-            <h1><i class="fas fa-cog"></i> Ayarlar</h1>
-            <p class="subtitle">Gemini API ve model ayarlarını yapılandırın</p>
+            <h1><i class="fas fa-cog"></i> <span data-i18n="settingsTitle">Settings</span></h1>
+            <p class="subtitle" data-i18n="settingsSubtitle">Configure Gemini API and model settings</p>
         </header>
 
         <div class="settings-section">
             <div class="settings-card">
-                <h3><i class="fas fa-key"></i> Gemini API Ayarları</h3>
+                <h3><i class="fas fa-key"></i> <span data-i18n="apiKeyLabel">Gemini API Settings</span></h3>
                 
                 <form id="settings-form">
                     <div class="form-group">
                         <label for="api-key">
-                            <i class="fas fa-key"></i> Gemini API Key
+                            <i class="fas fa-key"></i> <span data-i18n="apiKeyLabel">Gemini API Key</span>
                         </label>
                         <input 
                             type="password" 
                             id="api-key" 
-                            placeholder="API anahtarınızı girin"
+                            data-i18n-placeholder="apiKeyPlaceholder"
+                            placeholder="Enter your API key"
                             class="form-input"
                         >
                         <small class="form-help">
-                            API anahtarınızı <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>'dan alabilirsiniz
+                            <span data-i18n="apiKeyHelp">You can get your API key from Google AI Studio</span>
                         </small>
                     </div>
 
                     <div class="form-group">
                         <label for="model-name">
-                            <i class="fas fa-robot"></i> Model Adı
+                            <i class="fas fa-robot"></i> <span data-i18n="modelLabel">Model Name</span>
                         </label>
                         <select id="model-name" class="form-input">
                             <option value="gemini-2.5-flash">gemini-2.5-flash</option>
@@ -59,12 +64,12 @@
                             <option value="gemini-pro">gemini-pro</option>
                         </select>
                         <small class="form-help">
-                            Kullanmak istediğiniz Gemini modelini seçin
+                            <span data-i18n="modelHelp">Select the Gemini model you want to use</span>
                         </small>
                     </div>
 
                     <button type="submit" class="btn-primary">
-                        <i class="fas fa-save"></i> Ayarları Kaydet
+                        <i class="fas fa-save"></i> <span data-i18n="saveBtn">Save Settings</span>
                     </button>
                 </form>
 
@@ -72,16 +77,17 @@
             </div>
 
             <div class="settings-info">
-                <h3><i class="fas fa-info-circle"></i> Mevcut Ayarlar</h3>
+                <h3><i class="fas fa-info-circle"></i> <span data-i18n="currentSettings">Current Settings</span></h3>
                 <div id="current-settings" class="current-settings">
                     <div class="loading">
-                        <i class="fas fa-spinner fa-spin"></i> Yükleniyor...
+                        <i class="fas fa-spinner fa-spin"></i> <span data-i18n="loading">Loading...</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
     <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
 </body>
 </html>

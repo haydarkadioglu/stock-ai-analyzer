@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const symbol = symbolInput.value.trim().toUpperCase();
         
         if (!symbol) {
-            showError('Lütfen bir borsa kodu girin.');
+            showError(t('errorNoSymbol'));
             return;
         }
 
@@ -72,13 +72,14 @@ function analyzeStock(symbol, analysisType = 'short_term') {
         },
         body: JSON.stringify({ 
             symbol: symbol,
-            analysis_type: analysisType
+            analysis_type: analysisType,
+            language: currentLang
         })
     })
     .then(response => {
         if (!response.ok) {
             return response.json().then(err => {
-                throw new Error(err.error || 'Veri bulunamadı');
+                throw new Error(err.error || t('errorNoData'));
             });
         }
         return response.json();
@@ -96,7 +97,7 @@ function analyzeStock(symbol, analysisType = 'short_term') {
     .catch(error => {
         loadingOverlay.classList.add('hidden');
         console.error('Error:', error);
-        showError(error.message || 'Bu sembol için veri bulunamadı. Lütfen farklı bir sembol deneyin.');
+        showError(error.message || t('errorNoData'));
     });
 }
 
@@ -110,12 +111,12 @@ function displayAnalysis(data) {
 
     // Get analysis type label
     const analysisTypeLabels = {
-        'daily': 'Günlük Analiz',
-        'weekly': 'Haftalık Analiz',
-        'short_term': 'Kısa Vade Analizi',
-        'long_term': 'Uzun Vade Analizi'
+        'daily': currentLang === 'tr' ? 'Günlük Analiz' : 'Daily Analysis',
+        'weekly': currentLang === 'tr' ? 'Haftalık Analiz' : 'Weekly Analysis',
+        'short_term': currentLang === 'tr' ? 'Kısa Vade Analizi' : 'Short Term Analysis',
+        'long_term': currentLang === 'tr' ? 'Uzun Vade Analizi' : 'Long Term Analysis'
     };
-    const typeLabel = analysisTypeLabels[data.analysis_type] || 'Analiz';
+    const typeLabel = analysisTypeLabels[data.analysis_type] || (currentLang === 'tr' ? 'Analiz' : 'Analysis');
 
     // Display price info with analysis type
     symbolName.textContent = `${data.symbol} - ${typeLabel}`;
@@ -186,7 +187,7 @@ function askQuestion() {
     }
     
     if (!currentAnalysisData) {
-        showError('Önce bir analiz yapmalısınız.');
+        showError(t('errorNoAnalysis'));
         return;
     }
     
@@ -194,7 +195,7 @@ function askQuestion() {
     questionInput.disabled = true;
     const askBtn = document.getElementById('ask-btn');
     askBtn.disabled = true;
-    askBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yanıtlanıyor...';
+        askBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${t('answering')}`;
     
     // Add question to UI
     addQuestionToUI(question, null);
@@ -211,13 +212,14 @@ function askQuestion() {
             symbol: currentAnalysisData.symbol,
             question: question,
             analysis_text: currentAnalysisData.analysis,
-            price_data: currentAnalysisData.price_data
+            price_data: currentAnalysisData.price_data,
+            language: currentLang
         })
     })
     .then(response => {
         if (!response.ok) {
             return response.json().then(err => {
-                throw new Error(err.error || 'Soru yanıtlanırken bir hata oluştu');
+                throw new Error(err.error || t('errorAnswering'));
             });
         }
         return response.json();
@@ -229,17 +231,17 @@ function askQuestion() {
         // Re-enable input and button
         questionInput.disabled = false;
         askBtn.disabled = false;
-        askBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Sor';
+        askBtn.innerHTML = `<i class="fas fa-paper-plane"></i> ${t('askBtn')}`;
         questionInput.focus();
     })
     .catch(error => {
         console.error('Error:', error);
-        showError(error.message || 'Soru yanıtlanırken bir hata oluştu.');
+        showError(error.message || t('errorAnswering'));
         
         // Re-enable input and button
         questionInput.disabled = false;
         askBtn.disabled = false;
-        askBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Sor';
+        askBtn.innerHTML = `<i class="fas fa-paper-plane"></i> ${t('askBtn')}`;
     });
 }
 
@@ -257,7 +259,7 @@ function addQuestionToUI(question, answer) {
         ${answer ? `<div class="answer-bubble">
             <i class="fas fa-robot"></i>
             <div class="answer-text">${formatAnalysisText(answer)}</div>
-        </div>` : '<div class="answer-bubble loading-answer"><i class="fas fa-spinner fa-spin"></i> Yanıtlanıyor...</div>'}
+        </div>` : `<div class="answer-bubble loading-answer"><i class="fas fa-spinner fa-spin"></i> ${t('answering')}</div>`}
     `;
     
     questionsContainer.appendChild(questionDiv);

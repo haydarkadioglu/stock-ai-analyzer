@@ -56,7 +56,7 @@ function loadTabData(tabId) {
     }
 
     const grid = document.getElementById(gridId);
-    grid.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>';
+    grid.innerHTML = `<div class="loading"><i class="fas fa-spinner fa-spin"></i> ${t('loading')}</div>`;
 
     fetch(endpoint)
         .then(response => response.json())
@@ -65,7 +65,7 @@ function loadTabData(tabId) {
         })
         .catch(error => {
             console.error('Error:', error);
-            grid.innerHTML = '<div class="error-message">Veri yüklenirken bir hata oluştu.</div>';
+            grid.innerHTML = `<div class="error-message">${t('errorAnalyzing')}</div>`;
         });
 }
 
@@ -73,7 +73,7 @@ function displayPrices(data, gridId) {
     const grid = document.getElementById(gridId);
     
     if (Object.keys(data).length === 0) {
-        grid.innerHTML = '<div class="loading">Veri bulunamadı.</div>';
+        grid.innerHTML = `<div class="loading">${t('errorNoData')}</div>`;
         return;
     }
 
@@ -109,8 +109,8 @@ function createPriceCard(symbol, info) {
             <span>${changeSign}${info.change_percent.toFixed(2)}%</span>
             <span>(${changeSign}${info.change.toFixed(2)})</span>
         </div>
-        ${volume !== 'N/A' ? `<div class="price-card-volume">Hacim: ${volume}</div>` : ''}
-        ${marketCap ? `<div class="price-card-volume">Piyasa Değeri: ${marketCap}</div>` : ''}
+        ${volume !== 'N/A' ? `<div class="price-card-volume">${t('volume')} ${volume}</div>` : ''}
+        ${marketCap ? `<div class="price-card-volume">${t('marketCap')} ${marketCap}</div>` : ''}
     `;
 
     return card;
