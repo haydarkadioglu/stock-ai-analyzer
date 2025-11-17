@@ -2,6 +2,18 @@
 
 A modern and aesthetic stock market analysis application. Displays real-time prices for popular stocks, cryptocurrencies, and Istanbul Stock Exchange, and provides detailed analysis using Gemini AI.
 
+## Screenshots
+
+### Home Page
+![Home Page](images/home.png)
+
+### Analysis Page
+![Analysis Page 1](images/analyze1.png)
+![Analysis Page 2](images/analyze2.png)
+
+### Settings Page
+![Settings Page](images/settings.png)
+
 ## Features
 
 - 📊 **Real-Time Prices**: Live prices for popular stocks, cryptocurrencies, and Istanbul Stock Exchange
@@ -120,6 +132,18 @@ MIT
 # Stock AI Analyzer
 
 Modern ve estetik bir borsa analiz uygulaması. Popüler hisse senetleri, kripto paralar ve Borsa İstanbul'dan anlık fiyatları gösterir ve Gemini AI ile detaylı analiz yapar.
+
+## Ekran Görüntüleri
+
+### Anasayfa
+![Anasayfa](images/home.png)
+
+### Analiz Sayfası
+![Analiz Sayfası 1](images/analyze1.png)
+![Analiz Sayfası 2](images/analyze2.png)
+
+### Ayarlar Sayfası
+![Ayarlar Sayfası](images/settings.png)
 
 ## Özellikler
 
