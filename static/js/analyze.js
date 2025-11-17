@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Question asking functionality
     const askBtn = document.getElementById('ask-btn');
     const questionInput = document.getElementById('question-input');
+    const closeSidebarBtn = document.getElementById('close-sidebar');
+    const questionSidebar = document.getElementById('question-sidebar');
     
     if (askBtn && questionInput) {
         askBtn.addEventListener('click', function() {
@@ -39,6 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === 'Enter') {
                 askQuestion();
             }
+        });
+    }
+
+    // Close sidebar (minimize)
+    if (closeSidebarBtn && questionSidebar) {
+        closeSidebarBtn.addEventListener('click', function() {
+            questionSidebar.classList.add('hidden');
         });
     }
 });
@@ -138,6 +147,13 @@ function displayAnalysis(data) {
 
     // Show result
     analysisResult.classList.remove('hidden');
+    
+    // Show sidebar directly (no toggle needed)
+    const questionSidebar = document.getElementById('question-sidebar');
+    if (questionSidebar) {
+        questionSidebar.classList.remove('hidden');
+    }
+    
     analysisResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
