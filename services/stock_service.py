@@ -48,3 +48,51 @@ def get_stock_price(symbol):
     # If all variants failed, return error
     return {'error': f'No data available for symbol: {symbol}'}
 
+
+def get_stock_history(symbol, period='1mo'):
+    """Get historical price data for charting
+    
+    Args:
+        symbol: Stock symbol
+        period: Period to fetch (1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max)
+    
+    Returns:
+        Dictionary with dates and prices, or error
+    """
+    # Try different symbol formats for Borsa Istanbul warrants
+    symbol_variants = [symbol]
+    
+    if symbol.endswith('.V') and not symbol.endswith('.IS'):
+        symbol_variants.append(f"{symbol}.IS")
+    
+    if not symbol.endswith('.IS') and not symbol.endswith('.V'):
+        symbol_variants.append(f"{symbol}.IS")
+    
+    for sym in symbol_variants:
+        try:
+            ticker = yf.Ticker(sym)
+            hist = ticker.history(period=period)
+            
+            if hist.empty:
+                continue
+            
+            # Convert to list format for JSON
+            # For 1d period, show hour info, otherwise just date
+            if period == '1d':
+                dates = hist.index.strftime('%Y-%m-%d %H:%M').tolist()
+            else:
+                dates = hist.index.strftime('%Y-%m-%d').tolist()
+            prices = hist['Close'].tolist()
+            
+            return {
+                'dates': dates,
+                'prices': [round(float(p), 2) for p in prices],
+                'high': [round(float(p), 2) for p in hist['High'].tolist()],
+                'low': [round(float(p), 2) for p in hist['Low'].tolist()],
+                'volume': [int(v) for v in hist['Volume'].tolist()]
+            }
+        except Exception:
+            continue
+    
+    return {'error': f'No historical data available for symbol: {symbol}'}
+

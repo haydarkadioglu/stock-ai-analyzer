@@ -1,4 +1,7 @@
 // Analyze page JavaScript
+let priceChart = null;
+let currentSymbol = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     const analyzeBtn = document.getElementById('analyze-btn');
     const symbolInput = document.getElementById('symbol-input');
@@ -50,6 +53,19 @@ document.addEventListener('DOMContentLoaded', function() {
             questionSidebar.classList.add('hidden');
         });
     }
+    
+    // Chart period selector
+    const periodButtons = document.querySelectorAll('.period-btn');
+    periodButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            periodButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const period = this.getAttribute('data-period');
+            if (currentSymbol) {
+                loadChart(currentSymbol, period);
+            }
+        });
+    });
 });
 
 // Store current analysis data for questions
@@ -154,6 +170,10 @@ function displayAnalysis(data) {
     if (questionSidebar) {
         questionSidebar.classList.remove('hidden');
     }
+    
+    // Load and display chart
+    currentSymbol = data.symbol;
+    loadChart(data.symbol, '1d');
     
     analysisResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -297,5 +317,124 @@ function formatNumber(num) {
         return (num / 1e3).toFixed(2) + 'K';
     }
     return num.toFixed(2);
+}
+
+function loadChart(symbol, period = '1mo') {
+    fetch(`/api/history/${symbol}?period=${period}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Chart data not available');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error('Chart error:', data.error);
+                return;
+            }
+            renderChart(data);
+        })
+        .catch(error => {
+            console.error('Error loading chart:', error);
+        });
+}
+
+function renderChart(data) {
+    const ctx = document.getElementById('price-chart');
+    if (!ctx) return;
+    
+    // Destroy existing chart if it exists
+    if (priceChart) {
+        priceChart.destroy();
+    }
+    
+    // Prepare data
+    const labels = data.dates;
+    const prices = data.prices;
+    
+    // Determine color based on price trend
+    const firstPrice = prices[0];
+    const lastPrice = prices[prices.length - 1];
+    const isPositive = lastPrice >= firstPrice;
+    const chartColor = isPositive ? '#10b981' : '#ef4444'; // Green or Red
+    
+    priceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Price',
+                data: prices,
+                borderColor: chartColor,
+                backgroundColor: chartColor + '20',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return `$${context.parsed.y.toFixed(2)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    display: true,
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 10,
+                        font: {
+                            size: 11
+                        },
+                        color: '#9ca3af'
+                    }
+                },
+                y: {
+                    display: true,
+                    grid: {
+                        color: 'rgba(156, 163, 175, 0.1)'
+                    },
+                    ticks: {
+                        font: {
+                            size: 11
+                        },
+                        color: '#9ca3af',
+                        callback: function(value) {
+                            return '$' + value.toFixed(2);
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
 }
 

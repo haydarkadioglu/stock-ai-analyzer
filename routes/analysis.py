@@ -2,8 +2,8 @@
 from flask import Blueprint, jsonify, request
 from datetime import datetime
 import os
-from services.stock_service import get_stock_price
-from services.crypto_service import get_crypto_price
+from services.stock_service import get_stock_price, get_stock_history
+from services.crypto_service import get_crypto_price, get_crypto_history
 from services.gemini_service import analyze_stock, ask_question
 from config import GEMINI_API_KEY, GEMINI_MODEL
 
@@ -125,6 +125,37 @@ def ask_question_route():
             'question': question,
             'answer': answer,
             'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@analysis_bp.route('/history/<symbol>', methods=['GET'])
+def get_history(symbol):
+    """Get historical price data for charting"""
+    symbol = symbol.upper()
+    period = request.args.get('period', '1mo')  # Default to 1 month
+    
+    try:
+        # Try as stock first
+        history = get_stock_history(symbol, period)
+        
+        # Only try crypto if stock lookup failed and symbol doesn't look like a warrant/stock
+        if 'error' in history and not ('.' in symbol or symbol.endswith('.V')):
+            # Try crypto
+            crypto_symbol = f"{symbol}/USDT"
+            crypto_history = get_crypto_history(crypto_symbol, period)
+            if 'error' not in crypto_history:
+                history = crypto_history
+        
+        if 'error' in history:
+            return jsonify({'error': history['error']}), 404
+        
+        return jsonify({
+            'symbol': symbol,
+            'period': period,
+            **history
         })
         
     except Exception as e:
