@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borsa Analiz - Ayarlar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Borsa Analiz</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="/analyze" class="nav-link"><i class="fas fa-brain"></i> Analiz</a>
+                <a href="/settings" class="nav-link active"><i class="fas fa-cog"></i> Ayarlar</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1><i class="fas fa-cog"></i> Ayarlar</h1>
+            <p class="subtitle">Gemini API ve model ayarlarını yapılandırın</p>
+        </header>
+
+        <div class="settings-section">
+            <div class="settings-card">
+                <h3><i class="fas fa-key"></i> Gemini API Ayarları</h3>
+                
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label for="api-key">
+                            <i class="fas fa-key"></i> Gemini API Key
+                        </label>
+                        <input 
+                            type="password" 
+                            id="api-key" 
+                            placeholder="API anahtarınızı girin"
+                            class="form-input"
+                        >
+                        <small class="form-help">
+                            API anahtarınızı <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>'dan alabilirsiniz
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model-name">
+                            <i class="fas fa-robot"></i> Model Adı
+                        </label>
+                        <select id="model-name" class="form-input">
+                            <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                            <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                            <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+                            <option value="gemini-pro">gemini-pro</option>
+                        </select>
+                        <small class="form-help">
+                            Kullanmak istediğiniz Gemini modelini seçin
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Ayarları Kaydet
+                    </button>
+                </form>
+
+                <div id="status-message" class="status-message"></div>
+            </div>
+
+            <div class="settings-info">
+                <h3><i class="fas fa-info-circle"></i> Mevcut Ayarlar</h3>
+                <div id="current-settings" class="current-settings">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Yükleniyor...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+</body>
+</html>
+
