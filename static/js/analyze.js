@@ -66,6 +66,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // News analysis button
+    const analyzeNewsBtn = document.getElementById('analyze-news-btn');
+    if (analyzeNewsBtn) {
+        analyzeNewsBtn.addEventListener('click', function() {
+            if (currentSymbol) {
+                analyzeNews(currentSymbol);
+            } else {
+                showError(t('errorNoSymbol'));
+            }
+        });
+    }
 });
 
 // Store current analysis data for questions
@@ -175,7 +187,92 @@ function displayAnalysis(data) {
     currentSymbol = data.symbol;
     loadChart(data.symbol, '1d');
     
+    // Show news analysis button (initially hidden)
+    const analyzeNewsBtn = document.getElementById('analyze-news-btn');
+    if (analyzeNewsBtn) {
+        analyzeNewsBtn.style.display = 'inline-flex';
+        analyzeNewsBtn.disabled = false;
+    }
+    
+    // Hide previous news analysis
+    const newsAnalysisResult = document.getElementById('news-analysis-result');
+    if (newsAnalysisResult) {
+        newsAnalysisResult.classList.add('hidden');
+    }
+    
     analysisResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function analyzeNews(symbol) {
+    const analyzeNewsBtn = document.getElementById('analyze-news-btn');
+    const newsAnalysisResult = document.getElementById('news-analysis-result');
+    const newsAnalysisText = document.getElementById('news-analysis-text');
+    const loadingOverlay = document.getElementById('loading');
+    
+    if (!analyzeNewsBtn || !newsAnalysisResult || !newsAnalysisText) {
+        return;
+    }
+    
+    // Disable button and show loading
+    analyzeNewsBtn.disabled = true;
+    const originalText = analyzeNewsBtn.innerHTML;
+    analyzeNewsBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${t('analyzingNews')}`;
+    
+    // Show loading overlay
+    if (loadingOverlay) {
+        loadingOverlay.classList.remove('hidden');
+    }
+    
+    fetch('/api/analyze-news', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            symbol: symbol,
+            language: currentLang
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.error || t('errorAnalyzingNews'));
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('hidden');
+        }
+        
+        if (data.error) {
+            showError(data.error);
+            return;
+        }
+        
+        // Display news analysis
+        newsAnalysisText.innerHTML = formatAnalysisText(data.news_analysis);
+        newsAnalysisResult.classList.remove('hidden');
+        
+        // Re-enable button
+        analyzeNewsBtn.disabled = false;
+        analyzeNewsBtn.innerHTML = originalText;
+        
+        // Scroll to news analysis
+        newsAnalysisResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    })
+    .catch(error => {
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('hidden');
+        }
+        console.error('Error:', error);
+        showError(error.message || t('errorAnalyzingNews'));
+        
+        // Re-enable button
+        analyzeNewsBtn.disabled = false;
+        analyzeNewsBtn.innerHTML = originalText;
+    });
 }
 
 function formatAnalysisText(text) {

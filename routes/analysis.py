@@ -5,6 +5,7 @@ import os
 from services.stock_service import get_stock_price, get_stock_history
 from services.crypto_service import get_crypto_price, get_crypto_history
 from services.gemini_service import analyze_stock, ask_question
+from services.news_service import analyze_news_with_ai
 from config import GEMINI_API_KEY, GEMINI_MODEL
 
 analysis_bp = Blueprint('analysis', __name__, url_prefix='/api')
@@ -124,6 +125,55 @@ def ask_question_route():
             'symbol': symbol,
             'question': question,
             'answer': answer,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@analysis_bp.route('/analyze-news', methods=['POST'])
+def analyze_news_route():
+    """Use Gemini AI to research and analyze news for a stock symbol"""
+    data = request.json
+    symbol = data.get('symbol', '').upper()
+    language = data.get('language', 'tr')  # Default to Turkish
+    
+    if not symbol:
+        return jsonify({'error': 'Symbol is required'}), 400
+    
+    # Get current API key and model from env
+    api_key = os.getenv('GEMINI_API_KEY', '')
+    model_name = os.getenv('GEMINI_MODEL', GEMINI_MODEL)
+    
+    if not api_key:
+        return jsonify({'error': 'Gemini API key not configured'}), 400
+    
+    try:
+        # Get price data for context (optional but helpful)
+        price_data = None
+        try:
+            stock_data = get_stock_price(symbol)
+            if 'error' not in stock_data:
+                price_data = stock_data
+            else:
+                # Try as crypto
+                crypto_symbol = f"{symbol}/USDT"
+                crypto_data = get_crypto_price(crypto_symbol)
+                if 'error' not in crypto_data:
+                    price_data = crypto_data
+        except:
+            pass  # Price data is optional
+        
+        # Use Gemini AI to research and analyze news
+        analysis = analyze_news_with_ai(symbol, price_data, language, model_name)
+        
+        if 'error' in analysis:
+            return jsonify({'error': analysis['error']}), 500
+        
+        return jsonify({
+            'symbol': symbol,
+            'news_analysis': analysis['analysis'],
             'timestamp': datetime.now().isoformat()
         })
         

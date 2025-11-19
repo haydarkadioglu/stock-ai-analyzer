@@ -78,7 +78,14 @@ const translations = {
         disclaimerTitle: 'Önemli Uyarı',
         disclaimerText: 'Bu uygulamada sunulan analizler ve bilgiler yalnızca bilgilendirme amaçlıdır ve yatırım tavsiyesi niteliği taşımamaktadır. Yatırım kararları kendi risk ve sorumluluğunuzdadır. Lütfen yatırım yapmadan önce profesyonel danışmanlık alınız.',
         disclaimerClose: 'Anladım',
-        footerDisclaimer: 'Bu uygulamada sunulan analizler yatırım tavsiyesi niteliği taşımamaktadır.'
+        footerDisclaimer: 'Bu uygulamada sunulan analizler yatırım tavsiyesi niteliği taşımamaktadır.',
+        
+        // News Analysis
+        analyzeNewsBtn: 'İlgili Haberleri Analiz Et',
+        newsAnalysisTitle: 'Haber Analizi',
+        analyzingNews: 'Haberler analiz ediliyor...',
+        errorAnalyzingNews: 'Haberler analiz edilirken bir hata oluştu',
+        noNewsFound: 'Bu sembol için haber bulunamadı'
     },
     en: {
         // App Name
@@ -157,7 +164,14 @@ const translations = {
         disclaimerTitle: 'Important Notice',
         disclaimerText: 'The analyses and information provided in this application are for informational purposes only and do not constitute investment advice. Investment decisions are at your own risk and responsibility. Please consult a professional advisor before making any investment.',
         disclaimerClose: 'I Understand',
-        footerDisclaimer: 'The analyses provided in this application do not constitute investment advice.'
+        footerDisclaimer: 'The analyses provided in this application do not constitute investment advice.',
+        
+        // News Analysis
+        analyzeNewsBtn: 'Analyze Related News',
+        newsAnalysisTitle: 'News Analysis',
+        analyzingNews: 'Analyzing news...',
+        errorAnalyzingNews: 'An error occurred while analyzing news',
+        noNewsFound: 'No news found for this symbol'
     }
 };
 
