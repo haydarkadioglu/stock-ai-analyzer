@@ -72,7 +72,13 @@ const translations = {
         errorNoAnalysis: 'Önce bir analiz yapmalısınız.',
         errorLoadingSettings: 'Ayarlar yüklenirken bir hata oluştu',
         errorSavingSettings: 'Ayarlar kaydedilirken bir hata oluştu',
-        errorNoSettings: 'Lütfen en az bir ayar girin.'
+        errorNoSettings: 'Lütfen en az bir ayar girin.',
+        
+        // Disclaimer
+        disclaimerTitle: 'Önemli Uyarı',
+        disclaimerText: 'Bu uygulamada sunulan analizler ve bilgiler yalnızca bilgilendirme amaçlıdır ve yatırım tavsiyesi niteliği taşımamaktadır. Yatırım kararları kendi risk ve sorumluluğunuzdadır. Lütfen yatırım yapmadan önce profesyonel danışmanlık alınız.',
+        disclaimerClose: 'Anladım',
+        footerDisclaimer: 'Bu uygulamada sunulan analizler yatırım tavsiyesi niteliği taşımamaktadır.'
     },
     en: {
         // App Name
@@ -145,7 +151,13 @@ const translations = {
         errorNoAnalysis: 'You must perform an analysis first.',
         errorLoadingSettings: 'An error occurred while loading settings',
         errorSavingSettings: 'An error occurred while saving settings',
-        errorNoSettings: 'Please enter at least one setting.'
+        errorNoSettings: 'Please enter at least one setting.',
+        
+        // Disclaimer
+        disclaimerTitle: 'Important Notice',
+        disclaimerText: 'The analyses and information provided in this application are for informational purposes only and do not constitute investment advice. Investment decisions are at your own risk and responsibility. Please consult a professional advisor before making any investment.',
+        disclaimerClose: 'I Understand',
+        footerDisclaimer: 'The analyses provided in this application do not constitute investment advice.'
     }
 };
 
@@ -202,9 +214,48 @@ function updatePageLanguage() {
     }
 }
 
-// Initialize language on page load
+// Show disclaimer modal on first visit
+function showDisclaimerModal() {
+    const disclaimerShown = localStorage.getItem('disclaimerShown');
+    if (!disclaimerShown) {
+        const modal = document.getElementById('disclaimer-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
+    }
+}
+
+// Close disclaimer modal
+function closeDisclaimerModal() {
+    const modal = document.getElementById('disclaimer-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        localStorage.setItem('disclaimerShown', 'true');
+    }
+}
+
+// Initialize language and disclaimer on page load
 document.addEventListener('DOMContentLoaded', function() {
     document.documentElement.lang = currentLang;
     updatePageLanguage();
+    
+    // Show disclaimer modal
+    showDisclaimerModal();
+    
+    // Add event listener for close button
+    const closeBtn = document.getElementById('disclaimer-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeDisclaimerModal);
+    }
+    
+    // Close modal on background click
+    const modal = document.getElementById('disclaimer-modal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeDisclaimerModal();
+            }
+        });
+    }
 });
 

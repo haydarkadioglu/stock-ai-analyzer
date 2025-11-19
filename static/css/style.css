@@ -1047,3 +1047,133 @@ body {
     }
 }
 
+/* Disclaimer Modal */
+.disclaimer-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.disclaimer-modal.hidden {
+    display: none;
+}
+
+.disclaimer-modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.disclaimer-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--warning-color);
+}
+
+.disclaimer-header i {
+    font-size: 2rem;
+}
+
+.disclaimer-header h2 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.disclaimer-body {
+    margin-bottom: 2rem;
+}
+
+.disclaimer-body p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.disclaimer-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.disclaimer-footer .btn-primary {
+    min-width: 150px;
+}
+
+/* Footer */
+.app-footer {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    padding: 1.5rem 2rem;
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.app-footer p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.app-footer i {
+    color: var(--warning-color);
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .disclaimer-modal-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+    
+    .disclaimer-header h2 {
+        font-size: 1.25rem;
+    }
+    
+    .disclaimer-header i {
+        font-size: 1.5rem;
+    }
+    
+    .disclaimer-body p {
+        font-size: 0.9rem;
+    }
+    
+    .app-footer {
+        padding: 1rem;
+    }
+    
+    .app-footer p {
+        font-size: 0.85rem;
+    }
+}
+

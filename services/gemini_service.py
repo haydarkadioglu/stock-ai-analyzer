@@ -133,7 +133,15 @@ def analyze_stock(symbol, price_data, analysis_type='short_term', model_name=Non
     try:
         model = genai.GenerativeModel(model_name)
         response = model.generate_content(prompt)
-        return response.text
+        analysis_text = response.text
+        
+        # Add disclaimer at the end
+        if language == 'tr':
+            disclaimer = "\n\n---\n**UYARI:** Bu analiz yatırım tavsiyesi niteliği taşımamaktadır. Yatırım kararları kendi risk ve sorumluluğunuzdadır."
+        else:
+            disclaimer = "\n\n---\n**DISCLAIMER:** This analysis does not constitute investment advice. Investment decisions are at your own risk and responsibility."
+        
+        return analysis_text + disclaimer
     except Exception as e:
         raise Exception(f"Gemini API error: {str(e)}")
 
