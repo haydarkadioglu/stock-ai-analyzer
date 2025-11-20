@@ -7,8 +7,18 @@ from services.gemini_service import configure_gemini
 def get_settings():
     """Get current settings (without exposing API key)"""
     api_key = os.getenv('GEMINI_API_KEY', '')
+    
+    # Create masked API key (show first 4 and last 4 characters with dots in between)
+    masked_api_key = ''
+    if api_key:
+        if len(api_key) > 8:
+            masked_api_key = api_key[:4] + '•' * (len(api_key) - 8) + api_key[-4:]
+        else:
+            masked_api_key = '•' * len(api_key)
+    
     return {
         'api_key_configured': bool(api_key),
+        'api_key_masked': masked_api_key,
         'model': os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
     }
 
