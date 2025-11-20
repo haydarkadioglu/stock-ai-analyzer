@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock AI Analyzer - API Key Help</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-chart-line"></i>
+                <span data-i18n="appName">Stock AI Analyzer</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fas fa-home"></i> <span data-i18n="navHome">Home</span></a>
+                <a href="/analyze" class="nav-link"><i class="fas fa-brain"></i> <span data-i18n="navAnalyze">Analyze</span></a>
+                <a href="/settings" class="nav-link"><i class="fas fa-cog"></i> <span data-i18n="navSettings">Settings</span></a>
+                <div class="lang-selector">
+                    <button id="lang-tr" class="lang-btn active" onclick="setLanguage('tr')">TR</button>
+                    <button id="lang-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1><i class="fas fa-question-circle"></i> <span data-i18n="apiKeyHelpTitle">How to Get Gemini API Key</span></h1>
+            <p class="subtitle" data-i18n="apiKeyHelpSubtitle">Step-by-step guide to get your Gemini API key from Google AI Studio</p>
+        </header>
+
+        <div class="help-page-content">
+            <div class="help-steps">
+                <div class="help-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 data-i18n="apiKeyHelpStep1Title">Visit Google AI Studio</h3>
+                        <p data-i18n="apiKeyHelpStep1Desc">Go to <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> and sign in with your Google account.</p>
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="btn-primary">
+                            <i class="fas fa-external-link-alt"></i> <span data-i18n="apiKeyHelpOpenStudio">Open Google AI Studio</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="help-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 data-i18n="apiKeyHelpStep2Title">Create API Key</h3>
+                        <p data-i18n="apiKeyHelpStep2Desc">Click on "Create API Key" button and select "Create API key in new project" or choose an existing project.</p>
+                    </div>
+                </div>
+
+                <div class="help-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 data-i18n="apiKeyHelpStep3Title">Copy Your API Key</h3>
+                        <p data-i18n="apiKeyHelpStep3Desc">Once created, your API key will be displayed. Copy it immediately as it won't be shown again.</p>
+                    </div>
+                </div>
+
+                <div class="help-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3 data-i18n="apiKeyHelpStep4Title">Paste and Save</h3>
+                        <p data-i18n="apiKeyHelpStep4Desc">Go to Settings page, paste your API key in the input field and click "Save Settings". You can test it before saving using the "Test" button.</p>
+                        <a href="/settings" class="btn-secondary">
+                            <i class="fas fa-cog"></i> <span data-i18n="goToSettings">Go to Settings</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="help-note">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <h4 data-i18n="apiKeyHelpNoteTitle">Important Note</h4>
+                    <p data-i18n="apiKeyHelpNote"><strong>Security:</strong> Keep your API key secure and never share it publicly. You can revoke and regenerate API keys from Google AI Studio if needed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer Modal -->
+    <div id="disclaimer-modal" class="disclaimer-modal hidden">
+        <div class="disclaimer-modal-content">
+            <div class="disclaimer-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2 data-i18n="disclaimerTitle">Important Notice</h2>
+            </div>
+            <div class="disclaimer-body">
+                <p data-i18n="disclaimerText">The analyses and information provided in this application are for informational purposes only and do not constitute investment advice. Investment decisions are at your own risk and responsibility. Please consult a professional advisor before making any investment.</p>
+            </div>
+            <div class="disclaimer-footer">
+                <button id="disclaimer-close" class="btn-primary" data-i18n="disclaimerClose">I Understand</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p><i class="fas fa-info-circle"></i> <span data-i18n="footerDisclaimer">The analyses provided in this application do not constitute investment advice.</span></p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+</body>
+</html>

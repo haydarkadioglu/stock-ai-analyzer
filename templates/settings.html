@@ -38,8 +38,14 @@
                 
                 <form id="settings-form">
                     <div class="form-group">
-                        <label for="api-key">
-                            <i class="fas fa-key"></i> <span data-i18n="apiKeyLabel">Gemini API Key</span>
+                        <label for="api-key" class="label-with-help">
+                            <div>
+                                <i class="fas fa-key"></i> <span data-i18n="apiKeyLabel">Gemini API Key</span>
+                            </div>
+                            <a href="/api-key-help" class="help-btn" title="How to get API key">
+                                <i class="fas fa-question-circle"></i>
+                                <span data-i18n="howToGetApiKey">How to get API key?</span>
+                            </a>
                         </label>
                         <div class="api-key-input-group">
                             <input 

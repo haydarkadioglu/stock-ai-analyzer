@@ -18,3 +18,8 @@ def analyze():
 def settings():
     return render_template('settings.html')
 
+
+@pages_bp.route('/api-key-help')
+def api_key_help():
+    return render_template('api_key_help.html')
+
